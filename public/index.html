@@ -1,0 +1,77 @@
+<html>
+  <head>
+  <!---p5js video --->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+
+    <!---adding websocket and javascript--->
+		<script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      //make a variable and conect to websocket
+			var socket = io.connect();
+
+      //turning socket on
+			socket.on('connect', function() {
+				console.log("Connected");
+			});
+
+      //creating event message function
+			function sendit(evt, message) {
+				socket.emit(evt, message);
+			}
+
+			// When the window loads
+			window.addEventListener('load', function() {
+				console.log("Window Loaded");
+
+				// Track Whatever you would like
+
+				// Mousemove event
+        //going to keep this so people can make a drawing
+        //calling the send it function with the event and the message
+        //every time the mouse moves, the position is sent through the
+        //web socket to the server
+				document.addEventListener('mousemove', function(e) {
+					//console.log(e);
+					sendit('event', {'event': 'mousemove', x: e.clientX, y: e.clientY});
+				});
+
+				// // Click
+        // //send clicks to the server
+				// document.addEventListener('click', function(e) {
+				// 	//console.log(e);
+        //   //sending location of click
+				// 	sendit('event', {'event': 'click', x: e.clientX, y: e.clientY});
+				// });
+
+				// Text
+        //listening for any keys pressed
+        //logging keys that are pressed and sending them to the server through
+        //the websocket
+        //going to keep this so people can describe themselves
+				document.addEventListener('keypress', function(e) {
+					//console.log(e);
+					sendit('event', {'event': 'keypress', 'key': e.key});
+				});
+
+				// Anything else:
+				//https://www.w3schools.com/jsref/dom_obj_event.asp
+			});
+    </script>
+  </head>
+  <body>
+
+  <!---info and input--->
+  <p>trace your face in whatever amout of detail you want</p>
+  <p>don't worry if you can't see what you've drawn...the computer can</p>
+  <p>video to go here</p>
+  <p>type in an adjective to describe yourself</p>
+	<input type="text" id="thetext" value="What adjective describes you?">
+	<input type="button" id="thebutton" value="Click Me">
+
+  <!---reference to p5js--->
+  <script src="sketch.js"></script>
+
+  </body>
+</html>

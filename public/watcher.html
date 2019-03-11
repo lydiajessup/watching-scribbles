@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <!---installing the socket and javascript again--->
+    <script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+
+			var socket = io.connect();
+
+      //connsole log when connected
+			socket.on('connect', function() {
+				console.log("Connected");
+				socket.emit('watch',{});
+			});
+
+      //creating box to follow mouse around
+			// function getElement(data) {
+			// 	var element = null;
+			// 	if (document.getElementById(data.socket_id)) {
+			// 		element = document.getElementById(data.socket_id);
+			// 	} else {
+			// 		element = document.createElement('DIV');
+			// 		element.id = data.socket_id;
+			// 		element.style.backgroundColor = "red";
+			// 		element.style.width = "10px";
+			// 		element.style.height = "10px";
+			// 		document.body.appendChild(element);
+			// 		element.style.position = "absolute";
+			// 	}
+			// 	return element;
+			// }
+
+      var wordinput = [];
+
+			// When the window loads
+			window.addEventListener('load', function() {
+				console.log("Window Loaded");
+
+        //listening for data sent through socket
+				socket.on('event', function(data) {
+					//console.log(data);
+					//element = getElement(data);
+					//console.log(element);
+
+					if (data.event == "mousemove") {
+            //create new element each time?
+            var element = document.createElement('DIV');
+  					element.id = data.socket_id;
+  					element.style.backgroundColor = "mediumpurple";
+  					element.style.width = "2px";
+  					element.style.height = "2px";
+  					document.body.appendChild(element);
+  					element.style.position = "absolute";
+            element.style.top = data.y;
+            element.style.left = data.x;
+
+            //element.style.top = data.y;
+						//element.style.left = data.x;
+            //making it bigger when you click
+					// } else if (data.event == "click") {
+					// 	element.style.width = "20px";
+					// 	element.style.height = "20px";
+					// 	setTimeout(function() {
+					// 		element.style.width = "10px";
+					// 		element.style.height = "10px";
+					// 	}, 1000);
+
+					} else if (data.event == "keypress") {
+            //adding the description to the div
+            //make a variable from the div in the html
+            var description = document.getElementById('adjective');
+            //use input to edit the inner html of the div
+            wordinput.push(data.key);
+            var descripdisplay = wordinput.join('');
+            description.innerHTML = descripdisplay;
+            //element.innerHTML = element.innerHTML + data.key;
+            //console.log(description.innerHTML);
+					}
+				});
+			});
+
+    </script>
+  </head>
+  <body>
+
+  <div id="adjective"></div>
+
+  </body>
+</html>
